@@ -14,8 +14,17 @@ const scientists = [
 server.on('request', (req, res) => {
   const items = req.url.split('/')
   console.log(items);
-
-  if (items[1] === 'scientists' && items.length === 2) {
+  if (req.method == 'POST' && items[1] === 'scientists') {
+    req.on('data', (data) => {
+      const scientist = JSON.parse(data);
+      scientists.push(scientist);
+      console.log("scientist", scientists);
+    });
+    req.pipe(res);
+    //res.setHeader('Content-Type', 'application/json');
+    //res.write(JSON.stringify(scientists));
+  }
+  else if (req.method=='GET' && items[1] === 'scientists' && items.length === 2) {
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify(scientists));
   } else if(items.length === 3) {
